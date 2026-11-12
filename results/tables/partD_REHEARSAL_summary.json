@@ -1,0 +1,19 @@
+{
+  "n_events": 600,
+  "n_test_events": 294,
+  "noise": {
+    "median_shrink": 0.8989691118677738,
+    "median_jitter": 0.0165531967481083,
+    "shot_noise_alone": 0.015138295990064428,
+    "correlation_with_perfect_chip": 0.9983832227762977
+  },
+  "drift": {
+    "n_sentinels": 31,
+    "median_observed_std": 0.01394551028278127,
+    "median_shot_noise_std": 0.014639735717788283,
+    "excess_ratio": 0.9525793738090859,
+    "median_shift_first_vs_second_half": 0.0034729781014180144,
+    "correlation_run_order_vs_date": 0.026432825608131056,
+    "noise_reveals_run_position_auc": 0.4733
+  }
+}

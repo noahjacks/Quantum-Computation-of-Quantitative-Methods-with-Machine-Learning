@@ -1,0 +1,7 @@
+{
+  "alpha_star": 0.1,
+  "n_events": 5400,
+  "train_size": 800,
+  "sqrt_n_train": 28.284271247461902,
+  "band_width": 1100
+}

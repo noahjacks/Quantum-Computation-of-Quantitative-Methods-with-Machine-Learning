@@ -1,0 +1,19 @@
+Part 2 sample: 5,400 events (2,000 calibration, 3,400 test window), 68 test days
+  alpha=1.0   validation AUC 0.443 median similarity 3.25e-16  (133s)
+  alpha=0.3   validation AUC 0.445 median similarity 2.46e-02  (139s)
+  alpha=0.1   validation AUC 0.448 median similarity 6.65e-01  (134s)
+  alpha=0.03  validation AUC 0.427 median similarity 9.64e-01  (101s)
+  fidelity kernel (alpha=0.1) for 5,400 events: 7.6 min
+  backtests: 1.2 min
+ alpha  validation_auc  cv_auc  best_C  median_similarity  p99_similarity  alignment
+  1.00          0.4429  0.5011   10.00             0.0000          0.0004     0.0353
+  0.30          0.4453  0.5371    1.00             0.0246          0.5070     0.0123
+  0.10          0.4479  0.4916   10.00             0.6649          0.9274     0.0035
+  0.03          0.4266  0.4908    0.01             0.9640          0.9932     0.0029
+           kernel  median   mean    p99    std  alignment  geometric_difference_vs_RBF
+          SVM-FQK  0.6761 0.6493 0.9204 0.1727     0.0042                       3.1505
+          SVM-RBF  0.3679 0.3735 0.8017 0.2121     0.0068                          NaN
+          SVM-PQK  0.3679 0.3908 0.7125 0.1214     0.0091                       6.1821
+    SVM-PQK-noisy  0.3679 0.3905 0.7118 0.1213     0.0090                       6.3683
+SVM-FQK (alpha=1)  0.0000 0.0000 0.0002 0.0016     0.0354                      13.1260
+Part 2 finished.

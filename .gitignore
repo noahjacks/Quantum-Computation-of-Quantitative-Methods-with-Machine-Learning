@@ -1,0 +1,10 @@
+.venv/
+data/raw/
+data/processed/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+.pytest_cache/
+results/tables/parts/
+*.tmp

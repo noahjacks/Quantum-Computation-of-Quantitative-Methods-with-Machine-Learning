@@ -1,0 +1,217 @@
+﻿#,Category,Feature,Definition,Data needed,Ease
+1,Bond contract / static,Coupon rate,Annual coupon as % of par,Bond prospectus (FISD/Bloomberg/FINRA),Easy
+2,Bond contract / static,Time to maturity,Years until final maturity,Issue terms,Easy
+3,Bond contract / static,Bond age,Years since issuance,Issue terms,Easy
+4,Bond contract / static,Age / original maturity,Fraction of life elapsed,Issue terms,Easy
+5,Bond contract / static,Amount outstanding (log),Log face value outstanding,FISD / TRACE,Easy
+6,Bond contract / static,Offering amount (log),Log original issue size,FISD,Easy
+7,Bond contract / static,Callable flag,1 if bond has a call option,FISD,Easy
+8,Bond contract / static,Make-whole call flag,1 if call is make-whole,FISD,Medium
+9,Bond contract / static,Putable flag,1 if bond has a put option,FISD,Easy
+10,Bond contract / static,Convertible flag,1 if convertible,FISD,Easy
+11,Bond contract / static,Seniority (senior/sub),Ordinal rank in capital structure,FISD,Easy
+12,Bond contract / static,Secured flag,1 if secured by collateral,FISD,Easy
+13,Bond contract / static,Covenant count,Number of protective covenants,FISD covenant tables,Medium
+14,Bond contract / static,Floating-rate flag,1 if FRN,FISD,Easy
+15,Bond contract / static,Zero/step coupon flag,Non-standard coupon structure,FISD,Easy
+16,Bond contract / static,Rule 144A flag,1 if privately placed 144A,FISD / TRACE,Easy
+17,Bond contract / static,Currency / domicile,Issue currency and issuer country,Issue terms,Easy
+18,Bond contract / static,Industry sector,GICS/FISD industry code,FISD / Compustat,Easy
+19,"Yield, spread & valuation",Yield to maturity,IRR from price and cash flows,Bond price + terms,Easy
+20,"Yield, spread & valuation",Yield to worst,Min yield over call schedule,Price + call schedule,Medium
+21,"Yield, spread & valuation",Credit spread (vs Treasury),YTM minus duration-matched Treasury yield,Price + Treasury curve,Easy
+22,"Yield, spread & valuation",Z-spread,Constant spread over zero curve that prices bond,Zero curve + cash flows,Medium
+23,"Yield, spread & valuation",Option-adjusted spread,Spread after removing embedded option value,Rate model + terms,Hard
+24,"Yield, spread & valuation",Spread change 1m,Change in credit spread over 1 month,Spread history,Easy
+25,"Yield, spread & valuation",Spread change 3m,Change in credit spread over 3 months,Spread history,Easy
+26,"Yield, spread & valuation",Spread-to-rating-median,Spread minus median spread of same rating,Spreads + ratings,Easy
+27,"Yield, spread & valuation",Spread-to-sector-median,Spread minus sector/rating cell median,Spreads + sector,Easy
+28,"Yield, spread & valuation",Spread per unit duration,Spread / duration (carry per risk),Spread + duration,Easy
+29,"Yield, spread & valuation",Spread per unit default prob,Spread / model PD,Spread + PD model,Hard
+30,"Yield, spread & valuation",Bond book-to-market,Par (or amortised cost) / market price,Price + par,Easy
+31,"Yield, spread & valuation",Price (% of par),Clean price per 100 par,Price data,Easy
+32,"Yield, spread & valuation",Distress flag (price<80),Indicator for distressed pricing,Price data,Easy
+33,"Yield, spread & valuation",Carry,Yield minus funding rate (expected return if curve static),Yield + short rate,Easy
+34,"Yield, spread & valuation",Roll-down,Return from rolling down the spread curve,Issuer spread curve,Medium
+35,"Yield, spread & valuation",Value (fitted-spread residual),"Residual of spread regressed on rating, duration, sector",Cross-section of spreads,Medium
+36,"Yield, spread & valuation",CDS-bond basis,CDS spread minus bond Z-spread,CDS (Markit) + bond,Hard
+37,"Yield, spread & valuation",CDS spread (5y),Issuer 5-year CDS spread,Markit/IHS CDS,Hard
+38,"Yield, spread & valuation",CDS spread slope,10y minus 1y CDS spread,Markit CDS,Hard
+39,"Yield, spread & valuation",Model-implied spread gap,Market spread minus Merton/structural spread,Equity + balance sheet,Hard
+40,"Yield, spread & valuation",Yield vs issuer curve residual,Bond's yield residual vs issuer's own curve,Multiple bonds per issuer,Medium
+41,Interest-rate risk,Modified duration,Price sensitivity to yield,Price + cash flows,Easy
+42,Interest-rate risk,Spread duration,Sensitivity to spread changes,Cash flows,Easy
+43,Interest-rate risk,Effective duration,Duration with option effects,Rate model + options,Hard
+44,Interest-rate risk,Convexity,Second-order price sensitivity,Cash flows,Easy
+45,Interest-rate risk,DTS (duration x spread),Duration times spread — key credit risk proxy,Duration + spread,Easy
+46,Interest-rate risk,Key-rate duration 2y,Sensitivity to 2y point,Cash flows + curve,Medium
+47,Interest-rate risk,Key-rate duration 10y,Sensitivity to 10y point,Cash flows + curve,Medium
+48,Interest-rate risk,Term-structure beta,Beta on Treasury term factor (TERM),Returns + TERM factor,Easy
+49,Interest-rate risk,Treasury return beta,Beta on duration-matched Treasury return,Returns history,Easy
+50,Interest-rate risk,Duration-adjusted return,Bond return minus duration-matched Treasury return,Returns + Treasury,Medium
+51,Interest-rate risk,Maturity bucket,Short/intermediate/long categorical,Maturity,Easy
+52,Interest-rate risk,Negative convexity flag,1 if callable and in the money,Price + call terms,Medium
+53,Credit rating,Composite rating (numeric),Average of S&P/Moody's/Fitch on 1–22 scale,Ratings feed (FISD/WRDS),Medium
+54,Credit rating,IG/HY flag,1 if investment grade,Ratings,Easy
+55,Credit rating,Fallen-angel flag,Recently downgraded IG→HY,Ratings history,Medium
+56,Credit rating,Rising-star flag,Recently upgraded HY→IG,Ratings history,Medium
+57,Credit rating,Rating change 3m,Notch change over 3 months,Ratings history,Medium
+58,Credit rating,Rating change 12m,Notch change over 12 months,Ratings history,Medium
+59,Credit rating,Rating momentum x spread,Interaction of rating change with spread (Kelly et al.),Ratings + spreads,Medium
+60,Credit rating,Agency disagreement,Max−min notch across agencies,All agency ratings,Medium
+61,Credit rating,Split-rated flag,1 if agencies disagree on IG/HY,All agency ratings,Medium
+62,Credit rating,Outlook negative,Negative outlook or watch,Agency outlooks,Hard
+63,Credit rating,Outlook positive,Positive outlook or watch,Agency outlooks,Hard
+64,Credit rating,Issuer vs issue rating gap,Notch difference issuer vs bond,Ratings,Medium
+65,Credit rating,Market-implied rating gap,Spread-implied rating minus actual rating,Spreads + ratings,Medium
+66,Credit rating,Months since last rating action,Time since last rating change,Ratings history,Medium
+67,Bond momentum & reversal,Short-term reversal (1m),Last month's bond return,Monthly bond returns,Easy
+68,Bond momentum & reversal,Momentum 3m (skip 1),Return t−4 to t−2,Monthly returns,Easy
+69,Bond momentum & reversal,Momentum 6m (skip 1),Return t−7 to t−2,Monthly returns,Easy
+70,Bond momentum & reversal,Momentum 12m (skip 1),Return t−12 to t−2,Monthly returns,Easy
+71,Bond momentum & reversal,Long-term reversal 36m,Return t−36 to t−13,Monthly returns,Easy
+72,Bond momentum & reversal,Intermediate momentum,Return t−12 to t−7,Monthly returns,Easy
+73,Bond momentum & reversal,Spread momentum,Change in spread t−6 to t−1,Spread history,Easy
+74,Bond momentum & reversal,Excess-return momentum,Momentum on duration-adjusted returns,Returns + Treasury,Medium
+75,Bond momentum & reversal,Idiosyncratic momentum,Momentum in residual after factor model,Returns + factors,Medium
+76,Bond momentum & reversal,Rating-adjusted momentum,Momentum net of rating-cohort average,Returns + ratings,Medium
+77,Bond momentum & reversal,Industry bond momentum,Avg past return of bonds in same industry,Returns + sector,Easy
+78,Bond momentum & reversal,Issuer bond momentum,Avg past return of issuer's other bonds,Multi-bond issuers,Easy
+79,Bond momentum & reversal,Max monthly return (12m),Lottery-type max return,Monthly returns,Easy
+80,Bond momentum & reversal,Min monthly return (12m),Worst monthly return,Monthly returns,Easy
+81,Bond momentum & reversal,52-week high ratio,Price / 52-week high price,Daily/monthly prices,Easy
+82,Bond momentum & reversal,Return consistency,Fraction of positive months in 12m,Monthly returns,Easy
+83,Bond momentum & reversal,Weekly reversal,Last week's return,Daily TRACE,Medium
+84,Bond momentum & reversal,Momentum x illiquidity,Momentum interacted with illiquidity,Returns + liquidity,Medium
+85,Bond risk & return distribution,Total volatility (12m),Std dev of monthly returns,Monthly returns,Easy
+86,Bond risk & return distribution,Idiosyncratic volatility,Residual vol from bond factor model,Returns + factors,Medium
+87,Bond risk & return distribution,Downside volatility,Std dev of negative returns,Returns,Easy
+88,Bond risk & return distribution,Value-at-Risk 5%,5th percentile of past returns,Returns (36m),Easy
+89,Bond risk & return distribution,Expected shortfall 5%,Mean return below VaR,Returns,Easy
+90,Bond risk & return distribution,Return skewness,Third moment of returns,Returns,Easy
+91,Bond risk & return distribution,Return kurtosis,Fourth moment of returns,Returns,Easy
+92,Bond risk & return distribution,Co-skewness,Skew with bond market,Returns + market,Medium
+93,Bond risk & return distribution,Spread volatility,Std dev of spread changes,Spread history,Easy
+94,Bond risk & return distribution,Daily-return volatility,Vol from daily TRACE prices,Daily TRACE,Medium
+95,Bond risk & return distribution,Max drawdown (12m),Peak-to-trough loss,Price history,Easy
+96,Bond risk & return distribution,Duration-adj. volatility,Vol of excess-of-Treasury returns,Returns + Treasury,Medium
+97,Bond risk & return distribution,Jump risk,Frequency of |return| > 3σ,Daily prices,Medium
+98,Bond risk & return distribution,Return autocorrelation,1st-order autocorr (stale price/liquidity proxy),Returns,Easy
+99,Bond risk & return distribution,Volatility of volatility,Std dev of rolling vol,Returns,Medium
+100,Bond risk & return distribution,Tail beta,Beta on market in bottom decile months,Returns + market,Medium
+101,Bond risk & return distribution,Variance risk exposure,Beta on VIX changes,Returns + VIX,Easy
+102,Bond risk & return distribution,Upside volatility,Std dev of positive returns,Returns,Easy
+103,Bond factor betas,Bond market beta,Beta on aggregate bond market excess return,Returns + index,Easy
+104,Bond factor betas,DEF beta,Beta on default factor (Fama-French DEF),Returns + DEF,Easy
+105,Bond factor betas,TERM beta,Beta on term factor,Returns + TERM,Easy
+106,Bond factor betas,Stock market beta,Beta on equity market (MKT),Returns + FF,Easy
+107,Bond factor betas,SMB beta,Beta on equity size factor,Returns + FF,Easy
+108,Bond factor betas,HML beta,Beta on equity value factor,Returns + FF,Easy
+109,Bond factor betas,Downside bond beta,Beta in down markets (Bai-Bali-Wen),Returns + index,Medium
+110,Bond factor betas,Credit-risk factor beta,Beta on DRF (downside risk factor),Returns + factor,Medium
+111,Bond factor betas,Liquidity factor beta,Beta on bond liquidity factor,Returns + LRF,Medium
+112,Bond factor betas,Macro uncertainty beta,Beta on JLN uncertainty index,Returns + index,Medium
+113,Bond factor betas,Inflation beta,Beta on CPI surprises,Returns + CPI,Medium
+114,Bond factor betas,VIX beta,Beta on VIX changes,Returns + VIX,Easy
+115,Bond factor betas,Rate-level beta,Beta on 10y yield changes,Returns + yields,Easy
+116,Bond factor betas,Oil/commodity beta,Beta on oil returns,Returns + oil,Easy
+117,Liquidity & microstructure,Amihud illiquidity,Avg |return| / volume,Daily TRACE,Medium
+118,Liquidity & microstructure,Roll measure,2√(−cov of consecutive price changes),TRACE transactions,Medium
+119,Liquidity & microstructure,Bid-ask spread (quoted),Ask − bid / mid,Dealer quotes (Bloomberg/MarketAxess),Hard
+120,Liquidity & microstructure,Effective spread (TRACE),Customer buy minus sell price,Enhanced TRACE,Medium
+121,Liquidity & microstructure,Imputed round-trip cost,Feldhütter IRC from matched trades,TRACE,Medium
+122,Liquidity & microstructure,Trading volume (log),Monthly par volume traded,TRACE,Easy
+123,Liquidity & microstructure,Turnover,Volume / amount outstanding,TRACE + FISD,Easy
+124,Liquidity & microstructure,Number of trades,Count of trades in month,TRACE,Easy
+125,Liquidity & microstructure,Zero-trading days %,Fraction of days without a trade,TRACE,Easy
+126,Liquidity & microstructure,Price dispersion,Dispersion of trade prices around mean,TRACE,Medium
+127,Liquidity & microstructure,Avg trade size,Volume / trade count,TRACE,Easy
+128,Liquidity & microstructure,Institutional trade share,Share of trades ≥ $100k,TRACE,Easy
+129,Liquidity & microstructure,Retail trade share,Share of trades < $100k,TRACE,Easy
+130,Liquidity & microstructure,Interdealer share,Fraction of interdealer trades,Enhanced TRACE,Medium
+131,Liquidity & microstructure,Dealer inventory change,Net dealer buying,Enhanced TRACE (academic),Hard
+132,Liquidity & microstructure,Days since last trade,Staleness of price,TRACE,Easy
+133,Liquidity & microstructure,Volume volatility,Std dev of daily volume,TRACE,Easy
+134,Liquidity & microstructure,Liquidity score (vendor),Vendor composite liquidity score,MarketAxess/Bloomberg LQA,Hard
+135,Liquidity & microstructure,Index inclusion flag,1 if in Bloomberg/ICE index,Index constituents,Hard
+136,Liquidity & microstructure,Liquidity beta,Covariance with market liquidity,TRACE aggregates,Medium
+137,Liquidity & microstructure,Trade imbalance,Buys minus sells / total,Enhanced TRACE,Medium
+138,Liquidity & microstructure,Price impact (Kyle λ),Price change per unit signed volume,Enhanced TRACE,Hard
+139,Issuer fundamentals,Book leverage,Total debt / total assets,Compustat / filings,Easy
+140,Issuer fundamentals,Market leverage,Debt / (debt + market equity),Compustat + prices,Easy
+141,Issuer fundamentals,Net debt / EBITDA,Leverage vs cash earnings,Compustat,Easy
+142,Issuer fundamentals,Interest coverage,EBIT / interest expense,Compustat,Easy
+143,Issuer fundamentals,Cash / assets,Liquidity cushion,Compustat,Easy
+144,Issuer fundamentals,Current ratio,Current assets / current liabilities,Compustat,Easy
+145,Issuer fundamentals,Short-term debt share,Debt due <1y / total debt,Compustat,Easy
+146,Issuer fundamentals,Debt maturity wall,Debt maturing in next 2y / assets,Compustat / Capital IQ,Medium
+147,Issuer fundamentals,ROA,Net income / assets,Compustat,Easy
+148,Issuer fundamentals,Operating profitability,(Rev − COGS − SG&A − interest)/book equity,Compustat,Easy
+149,Issuer fundamentals,Gross profitability,Gross profit / assets,Compustat,Easy
+150,Issuer fundamentals,Earnings volatility,Std dev of ROA (5y),Compustat,Medium
+151,Issuer fundamentals,Asset growth,YoY change in total assets,Compustat,Easy
+152,Issuer fundamentals,Net debt issuance,Change in debt / assets,Compustat,Easy
+153,Issuer fundamentals,Capex / assets,Investment intensity,Compustat,Easy
+154,Issuer fundamentals,Accruals,Non-cash earnings component / assets,Compustat,Easy
+155,Issuer fundamentals,Free cash flow / debt,Debt service capacity,Compustat,Easy
+156,Issuer fundamentals,Altman Z-score,Weighted ratio bankruptcy score,Compustat + prices,Easy
+157,Issuer fundamentals,Ohlson O-score,Logit bankruptcy score,Compustat,Medium
+158,Issuer fundamentals,Merton distance-to-default,Structural DD from equity vol and leverage,Equity + balance sheet,Medium
+159,Issuer fundamentals,Campbell-Hilscher-Szilagyi PD,Failure probability model,Compustat + CRSP,Medium
+160,Issuer fundamentals,Firm size (log assets),Log total assets,Compustat,Easy
+161,Issuer fundamentals,Tangibility,PP&E / assets (recovery proxy),Compustat,Easy
+162,Issuer fundamentals,Sales growth,YoY revenue growth,Compustat,Easy
+163,Equity-market signals,Equity market cap (log),Issuer stock market value,CRSP / exchange data,Easy
+164,Equity-market signals,Equity momentum 12-1,Stock return t−12 to t−2,Stock prices,Easy
+165,Equity-market signals,Equity 1m return,Last month's stock return (lead-lag into bonds),Stock prices,Easy
+166,Equity-market signals,Equity 6m return,Stock return over 6 months,Stock prices,Easy
+167,Equity-market signals,Equity volatility,Std dev of daily stock returns,Stock prices,Easy
+168,Equity-market signals,Equity idiosyncratic vol,Residual vol vs FF3,Stock + FF factors,Easy
+169,Equity-market signals,Implied volatility (ATM),Option-implied vol,OptionMetrics,Hard
+170,Equity-market signals,Implied vol skew,OTM put IV − ATM IV,OptionMetrics,Hard
+171,Equity-market signals,Equity book-to-market,Book equity / market equity,Compustat + prices,Easy
+172,Equity-market signals,Earnings-to-price,EPS / price,Compustat + prices,Easy
+173,Equity-market signals,Analyst forecast dispersion,Std dev of EPS forecasts / mean,IBES,Hard
+174,Equity-market signals,Analyst revisions,Change in consensus EPS,IBES,Hard
+175,Equity-market signals,Earnings surprise (SUE),Standardised unexpected earnings,Compustat/IBES,Medium
+176,Equity-market signals,Earnings announcement return,3-day CAR around earnings,Stock prices + dates,Medium
+177,Equity-market signals,Short interest ratio,Shares shorted / shares outstanding,Exchange short interest,Medium
+178,Equity-market signals,Equity lending fee,Cost to borrow stock,Markit securities finance,Hard
+179,Equity-market signals,Equity beta,Stock beta on market,Stock prices,Easy
+180,Equity-market signals,Stock turnover,Volume / shares outstanding,Stock data,Easy
+181,Equity-market signals,Equity drawdown,Stock price / 52-week high,Stock prices,Easy
+182,Equity-market signals,Stock illiquidity (Amihud),|ret| / dollar volume,Stock data,Easy
+183,Equity-market signals,Insider net buying,Insider purchases − sales,Form 4 filings,Medium
+184,Equity-market signals,Equity-bond return gap,Stock 1m return − bond 1m return,Both returns,Easy
+185,"Ownership, flows & supply",Mutual fund ownership %,Share held by bond mutual funds,eMAXX / fund holdings,Hard
+186,"Ownership, flows & supply",Insurance ownership %,Share held by insurers,eMAXX / NAIC,Hard
+187,"Ownership, flows & supply",Ownership concentration (HHI),Concentration of holders,eMAXX,Hard
+188,"Ownership, flows & supply",Fund flow pressure,Holder-weighted fund flows,Holdings + flows,Hard
+189,"Ownership, flows & supply",ETF ownership %,Share held by bond ETFs,ETF holdings files,Medium
+190,"Ownership, flows & supply",ETF flow exposure,ETF-holder flows into bond,ETF holdings + flows,Medium
+191,"Ownership, flows & supply",Fire-sale pressure,Flow-induced selling by distressed funds,Holdings + flows,Hard
+192,"Ownership, flows & supply",New issuance by issuer,Issuer issuance in past 12m,FISD / new-issue data,Medium
+193,"Ownership, flows & supply",New-issue concession,New issue yield − existing curve,Primary market data,Hard
+194,"Ownership, flows & supply",Fed eligibility flag,1 if eligible for central bank buying,Programme rules,Medium
+195,"Ownership, flows & supply",Bonds outstanding per issuer,Number of issuer's outstanding bonds,FISD,Easy
+196,"Ownership, flows & supply",Upcoming coupon/maturity cash,Index cash reinvestment pressure,Index + calendar,Medium
+197,Macro & market-level,10y Treasury yield,Level of rates,FRED,Easy
+198,Macro & market-level,2s10s slope,10y − 2y Treasury,FRED,Easy
+199,Macro & market-level,3m T-bill rate,Short rate / funding,FRED,Easy
+200,Macro & market-level,IG index OAS,Market-wide IG spread,FRED (ICE BofA series),Easy
+201,Macro & market-level,HY index OAS,Market-wide HY spread,FRED (ICE BofA series),Easy
+202,Macro & market-level,HY − IG spread,Credit risk premium proxy,FRED,Easy
+203,Macro & market-level,VIX,Equity implied vol,FRED / CBOE,Easy
+204,Macro & market-level,MOVE index,Treasury implied vol,ICE / Bloomberg,Medium
+205,Macro & market-level,Cochrane-Piazzesi factor,Forward-rate combination predicting bond excess returns,Treasury forward rates,Medium
+206,Macro & market-level,Ludvigson-Ng macro factor,PC of large macro panel,FRED-MD,Medium
+207,Macro & market-level,Excess bond premium (GZ),Gilchrist-Zakrajšek EBP,Fed website,Easy
+208,Macro & market-level,Industrial production growth,Real activity,FRED,Easy
+209,Macro & market-level,CPI inflation,YoY inflation,FRED,Easy
+210,Macro & market-level,Unemployment change,Labour market,FRED,Easy
+211,Macro & market-level,Economic policy uncertainty,Baker-Bloom-Davis EPU,policyuncertainty.com / FRED,Easy
+212,Macro & market-level,JLN macro uncertainty,Jurado-Ludvigson-Ng index,Authors' website,Easy
+213,Macro & market-level,Default rate (trailing 12m),Market speculative-grade default rate,Moody's / S&P reports,Hard
+214,Macro & market-level,Senior loan officer survey,Bank lending standards,Fed SLOOS,Easy
+215,Macro & market-level,Bond fund aggregate flows,Net flows into bond funds,ICI,Medium
+216,Macro & market-level,Dollar index,Trade-weighted USD,FRED,Easy
