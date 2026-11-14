@@ -1,0 +1,23 @@
+{
+  "n_events": 400,
+  "n_test_events": 196,
+  "noise": {
+    "median_shrink": 0.8657523823499399,
+    "median_jitter": 0.03370825176253282,
+    "shot_noise_alone": 0.030291147740183197,
+    "correlation_with_perfect_chip": 0.9929290528268161
+  },
+  "drift": {
+    "n_sentinels": 21,
+    "median_observed_std": 0.03204045911434827,
+    "median_shot_noise_std": 0.02962629570349453,
+    "excess_ratio": 1.0814871840548388,
+    "median_shift_first_vs_second_half": 0.010172865741335552,
+    "correlation_run_order_vs_date": 0.00724426113173699,
+    "noise_reveals_run_position_auc": 0.7731499999999999,
+    "run_position_auc_if_shuffled_975": 0.5736262499999999,
+    "run_position_p_value": 0.0033222591362126247,
+    "leftover_reveals_date_auc": 0.783938575430172,
+    "perfect_chip_values_reveal_date_auc": 0.983718487394958
+  }
+}

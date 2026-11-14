@@ -31,6 +31,18 @@ claimed effect (AUC 0.63 -> 0.75-0.97) is enormous.
 `make_rehearsal_file` produces a stand-in results file from the noisy
 simulator so that this whole analysis can be tested before any quantum time
 is spent.  Rehearsal output is always labelled as such.
+
+ADDED AFTER THE REAL RUN (14 Nov 2026; recorded in PREREGISTRATION.md
+section 10).  The planned outputs above are unchanged.  Three things were
+added to state the result precisely:
+  * `paired_differences`  the difference between D and every other set with
+    its own 95% interval (the planned table only gave each set's interval);
+  * `decodability_test`   whether "the noise reveals the run position" could
+    be luck, by repeating the test with shuffled labels;
+  * a warning check: the chip's distortion depends on the inputs, and our
+    inputs contain the date, so a naive "does the noise reveal the DATE?"
+    test says yes even though the run order was random.  That is not the
+    clock; it is reported so that nobody mistakes it for one.
 """
 from __future__ import annotations
 
@@ -84,6 +96,66 @@ def pooled_auc(y: np.ndarray, p: np.ndarray, day: np.ndarray, n_boot: int = 1000
     return float(roc_auc_score(y, p)), float(np.quantile(boots, 0.025)), float(np.quantile(boots, 0.975))
 
 
+def paired_differences(y: np.ndarray, day: np.ndarray, preds: dict, reference: str = "D",
+                       n_boot: int = 2000, seed: int = C.BOOTSTRAP_SEED) -> pd.DataFrame:
+    """AUC of `reference` minus AUC of every other set, on the same test
+    events, with a 95% interval.
+
+    Whole test days are re-drawn, and the SAME re-drawn days are used for
+    both sets.  The interval therefore describes the difference itself, which
+    is much tighter than comparing two separate intervals by eye.  A
+    difference is only "real" if its interval excludes zero.
+
+    preds : set name -> predictions for the test events (same order as y)."""
+    rng = np.random.default_rng(seed)
+    days = np.unique(day)
+    groups = [np.where(day == d)[0] for d in days]
+    boots = {k: [] for k in preds}
+    for _ in range(n_boot):
+        idx = np.concatenate([groups[g] for g in rng.integers(0, len(days), len(days))])
+        if 0 < y[idx].sum() < len(idx):
+            for k, p in preds.items():
+                boots[k].append(roc_auc_score(y[idx], p[idx]))
+    boots = {k: np.asarray(v) for k, v in boots.items()}
+    base = roc_auc_score(y, preds[reference])
+    rows = []
+    for k in preds:
+        if k == reference:
+            continue
+        d = boots[reference] - boots[k]
+        lo, hi = float(np.quantile(d, 0.025)), float(np.quantile(d, 0.975))
+        rows.append({"comparison": f"{reference} minus {k}",
+                     "difference": float(base - roc_auc_score(y, preds[k])),
+                     "ci_low": lo, "ci_high": hi, "significant": bool(lo > 0 or hi < 0)})
+    return pd.DataFrame(rows)
+
+
+def _decodable(features: np.ndarray, labels: np.ndarray) -> float:
+    """Can a simple model tell the two groups in `labels` apart from
+    `features`?  Returns an AUC on held-out events (0.5 = no)."""
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.model_selection import KFold, cross_val_predict
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
+    model = make_pipeline(StandardScaler(), LogisticRegression(C=0.01, max_iter=500))
+    p = cross_val_predict(model, features, labels, cv=KFold(5, shuffle=True, random_state=0),
+                          method="predict_proba")[:, 1]
+    return float(roc_auc_score(labels, p))
+
+
+def decodability_test(features: np.ndarray, labels: np.ndarray, n_shuffles: int = 300,
+                      seed: int = 0) -> dict:
+    """`_decodable`, plus what the same test gives when the labels are
+    shuffled (so there is nothing to find).  p_value = how often shuffled
+    labels do at least as well as the real ones."""
+    rng = np.random.default_rng(seed)
+    observed = _decodable(features, labels)
+    shuffled = np.array([_decodable(features, rng.permutation(labels)) for _ in range(n_shuffles)])
+    return {"auc": observed, "shuffled_mean": float(shuffled.mean()),
+            "shuffled_975": float(np.quantile(shuffled, 0.975)),
+            "p_value": float((1 + (shuffled >= observed).sum()) / (1 + n_shuffles))}
+
+
 def analyse(results: pd.DataFrame, sets: dict, events: pd.DataFrame,
             train_fraction: float = 0.5, verbose: bool = True) -> dict:
     """Run the full set-D analysis on a hardware (or rehearsal) results file."""
@@ -113,6 +185,7 @@ def analyse(results: pd.DataFrame, sets: dict, events: pd.DataFrame,
     test_days = np.unique(day)[counts_before >= train_size]
     table = []
     preds = {}
+    average = {}                                             # set -> mean of the four models
     for name, X in feature_sets.items():
         res = run_one(X, y, day, test_days, blinding=0, train_size=train_size,
                       retune_every=10 ** 6, label=name)      # tune once, on the first window
@@ -121,10 +194,17 @@ def analyse(results: pd.DataFrame, sets: dict, events: pd.DataFrame,
             auc, lo, hi = pooled_auc(y[g["row"].to_numpy()], g["p"].to_numpy(), g["day"].to_numpy())
             table.append({"set": name, "model": model, "auc": auc, "ci_low": lo, "ci_high": hi})
         g = res.groupby("row")["p"].mean()                   # average of the four models
+        average[name] = g
         d_of = res.drop_duplicates("row").set_index("row")["day"]
         auc, lo, hi = pooled_auc(y[g.index.to_numpy()], g.to_numpy(), d_of.loc[g.index].to_numpy())
         table.append({"set": name, "model": "All", "auc": auc, "ci_low": lo, "ci_high": hi})
     table = pd.DataFrame(table)
+
+    # ---- 2b. is D really different from the others?  (added after the run) ----
+    test_rows = average["A"].index.to_numpy()
+    assert all((average[k].index.to_numpy() == test_rows).all() for k in average)
+    differences = paired_differences(y[test_rows], day[test_rows],
+                                     {k: average[k].to_numpy() for k in average})
 
     # ---- 3. drift -------------------------------------------------------------
     drift = sentinel_drift(results, shots)
@@ -135,23 +215,33 @@ def analyse(results: pd.DataFrame, sets: dict, events: pd.DataFrame,
     #     noise alone, whether an event ran in the first or second half of the
     #     run.  0.5 = no detectable drift; well above 0.5 = the chip moved.
     #     Because of (a), such drift still cannot reveal the DATE of an event.
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.model_selection import KFold, cross_val_predict
-    from sklearn.pipeline import make_pipeline
-    from sklearn.preprocessing import StandardScaler
     resid = D - (surrogate.intercept + surrogate.slope * B)
     late_run = (position > np.median(position)).astype(int)
-    model = make_pipeline(StandardScaler(), LogisticRegression(C=0.01, max_iter=500))
-    p = cross_val_predict(model, resid, late_run, cv=KFold(5, shuffle=True, random_state=0),
-                          method="predict_proba")[:, 1]
-    drift["noise_reveals_run_position_auc"] = float(roc_auc_score(late_run, p))
+    position_test = decodability_test(resid, late_run)
+    drift["noise_reveals_run_position_auc"] = position_test["auc"]
+    #     (added after the run) could that be luck?  The same test on shuffled labels:
+    drift["run_position_auc_if_shuffled_975"] = position_test["shuffled_975"]
+    drift["run_position_p_value"] = position_test["p_value"]
+    # (c) (added after the run) A WARNING, NOT A CLOCK.  What is left of the
+    #     hardware values after the best straight-line fit to the perfect values
+    #     still depends on the inputs, and our inputs contain the date.  So the
+    #     leftovers "reveal" early versus late DATES even though the run order
+    #     was random.  The perfect-chip values do the same, far more strongly,
+    #     with no hardware involved at all.
+    late_date = (day > np.median(day)).astype(int)
+    drift["leftover_reveals_date_auc"] = _decodable(resid, late_date)
+    drift["perfect_chip_values_reveal_date_auc"] = _decodable(B, late_date)
 
     out = {"n_events": int(len(rows)), "n_test_events": int(len(preds["A"]) // 4),
-           "noise": noise, "table": table, "drift": drift}
+           "noise": noise, "table": table, "differences": differences, "drift": drift}
     if verbose:
         wide = table.pivot(index="set", columns="model", values="auc").round(3)
         print(f"{len(rows)} hardware events, {out['n_test_events']} of them used for testing")
         print("How the chip distorts the perfect values:", {k: round(v, 4) for k, v in noise.items()})
         print(wide[["All", "LR", "RF", "XGB", "NN"]].to_string())
+        print("Is D different from the others? (difference in AUC of the model average, 95% interval)")
+        for r in differences.itertuples():
+            print(f"   {r.comparison}: {r.difference:+.3f}  ({r.ci_low:+.3f} to {r.ci_high:+.3f})"
+                  f"{'  <- real difference' if r.significant else ''}")
         print("Drift:", {k: (round(v, 4) if isinstance(v, float) else v) for k, v in drift.items()})
     return out

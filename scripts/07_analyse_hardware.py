@@ -23,6 +23,7 @@ from qon.feature_sets import HARDWARE_FILE, load_feature_sets
 from qon.hardware_analysis import REHEARSAL_FILE, analyse, make_rehearsal_file
 
 warnings.filterwarnings("ignore")
+SAVED_RUN = C.ROOT / "results" / "hardware_run" / "hardware_features.parquet"
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
@@ -35,12 +36,17 @@ if __name__ == "__main__":
         results = make_rehearsal_file(fs["sets"], fs["events"], n_events=args.events)
         tag = "REHEARSAL"
     else:
-        if not HARDWARE_FILE.exists():
+        # the run writes to data/processed (not kept in git); a copy of the
+        # 14 Nov 2026 run is kept in results/hardware_run so that anyone who
+        # downloads the project can repeat this analysis
+        source = HARDWARE_FILE if HARDWARE_FILE.exists() else SAVED_RUN
+        if not source.exists():
             raise SystemExit("No hardware results yet. Run scripts/06_hardware_run.py --mode run "
                              "first, or use --rehearsal.")
-        results = pd.read_parquet(HARDWARE_FILE)
+        print(f"hardware results: {source.relative_to(C.ROOT)}")
+        results = pd.read_parquet(source)
         tag = "hardware"
-        record_file = HARDWARE_FILE.with_suffix(".json")
+        record_file = source.with_suffix(".json")
         if record_file.exists():
             record = json.loads(record_file.read_text())
             if not record.get("complete", True):
@@ -49,6 +55,8 @@ if __name__ == "__main__":
                       "the events are a random subset of the plan.")
     out = analyse(results, fs["sets"], fs["events"])
     out["table"].to_csv(C.TABLES / f"partD_{tag}_auc.csv", index=False)
+    out["differences"].to_csv(C.TABLES / f"partD_{tag}_differences.csv", index=False)
     summary = {k: out[k] for k in ("n_events", "n_test_events", "noise", "drift")}
     (C.TABLES / f"partD_{tag}_summary.json").write_text(json.dumps(summary, indent=2))
-    print(f"saved results/tables/partD_{tag}_auc.csv and partD_{tag}_summary.json")
+    print(f"saved results/tables/partD_{tag}_auc.csv, partD_{tag}_differences.csv "
+          f"and partD_{tag}_summary.json")

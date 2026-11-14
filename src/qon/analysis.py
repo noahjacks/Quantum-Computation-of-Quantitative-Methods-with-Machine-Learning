@@ -254,6 +254,28 @@ def fig_part1_differences(pred: pd.DataFrame, sets=("B", "C", "E", "F"),
     return _save(fig, name)
 
 
+def fig_hardware(table: pd.DataFrame, name: str = "partD_hardware", rehearsal: bool = False,
+                 hsbc_range: tuple[float, float] = (0.75, 0.97)):
+    """The real-hardware comparison: one pooled AUC per feature set, on the
+    same events, with the scores HSBC report for hardware shown for scale.
+
+    table : the output of hardware_analysis.analyse (rows set/model/auc/ci)."""
+    plt = _style()
+    t = table[table["model"] == "All"].set_index("set").loc[["A", "B", "C", "D", "E", "F"]]
+    fig, ax = plt.subplots(figsize=(7.6, 0.62 * len(t) + 1.7))
+    ax.axvspan(*hsbc_range, color=GRID, alpha=0.75, lw=0, zorder=0)
+    ax.annotate("what HSBC report\nfor real hardware", (sum(hsbc_range) / 2, len(t) - 0.5),
+                ha="center", va="top", fontsize=8.5, color=INK2)
+    _dot_whisker(ax, [SET_INFO[s][0] for s in t.index], t["auc"], t["ci_low"], t["ci_high"],
+                 [FAMILY_COLOUR[SET_INFO[s][1]] for s in t.index], ref=0.5, ref_label="guessing",
+                 fmt="{:.2f}")
+    ax.set_xlim(0.33, 1.0)
+    ax.set_xlabel("AUC over all test requests, average of the four models (dot) with 95% interval (line)")
+    what = "REHEARSAL on simulated data, not hardware" if rehearsal else "real IBM chip, 400 quote requests"
+    ax.set_title(f"Set D: every input scores at guessing level  ({what})")
+    return _save(fig, name)
+
+
 def fig_drift(rows: pd.DataFrame, name: str = "part1_drift"):
     """rows: output of several paired_difference() calls plus a 'label' column."""
     plt = _style()

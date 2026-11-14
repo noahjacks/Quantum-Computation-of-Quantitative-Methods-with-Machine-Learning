@@ -12,9 +12,10 @@ will be analysed and interpreted.
 **Honest status.** All one-off choices were made using only the calibration
 period (the 40 trading days before the test window). No setting was changed
 after looking at a test-window score. The simulated feature sets (A, B, C, E, F)
-have been computed and scored; the hardware set (D) has not been run. The
-hardware plan below is therefore a true pre-registration; the simulated part is
-a record of what was done.
+have been computed and scored. When this plan was frozen the hardware set (D)
+had not been run, so the hardware plan below is a true pre-registration; the
+simulated part is a record of what was done. The hardware run took place on
+14 Nov 2026 and is recorded in section 10.
 
 ## 1. Question
 
@@ -136,7 +137,7 @@ reported separately and labelled as a follow-up wherever it appears.
   strength is chosen by the same in-window cross-validation.
 * **What was not changed.** No setting of Part 1, of the data, of the circuit
   or of the planned Part 2 run was altered after seeing any result. The
-  hardware protocol in section 6 is unchanged and still unrun.
+  hardware protocol in section 6 was unchanged and still unrun at that point.
 
 ### Change to how the hardware run is executed (14 Nov 2026, before any hardware run)
 
@@ -156,3 +157,53 @@ The hardware script was changed so that it cannot:
     how much the chip moved.
 * **Cost estimate recorded before the run.** By IBM's published formula, 400
   events at 1024 shots need about 6 to 8 minutes of quantum time.
+
+## 10. The hardware run as executed (14 Nov 2026)
+
+| Item | What was done |
+|---|---|
+| Chip | `ibm_fez` (156-qubit Heron r2), IBM Open Plan |
+| Qubits | a 109-qubit path found by `find_chain` on the live chip; median two-qubit gate error on the path 0.24%, worst 1.1% |
+| Events | 400 test-window events, 5 or 6 from every test day, chosen with seed 2026 |
+| Run order | random (seed 2026); correlation of run order with event date: 0.007 |
+| Sentinels | 21 repeats of one fixed circuit, one after every 20 events |
+| Shots | 1024 per circuit and basis |
+| Error handling | Pauli twirling and TREX |
+| Timing job | 7 circuits, 9 quantum seconds |
+| Run | 9 jobs, 421 circuits, 397 quantum seconds, 17:30 to 17:38 UTC, in one session; the spending limit (480) was not reached and nothing was stopped or continued |
+| Deviations from section 6 | none |
+
+**Reading the result by section 7.** Two of its rows apply.
+
+* *D is not better than A.* Pooled AUC of the model average: A 0.453, B 0.488,
+  C 0.520, D 0.503, E 0.484, F 0.524, on 196 test events. D minus A is +0.050
+  (95% interval −0.042 to +0.130). Conclusion as written beforehand: no
+  hardware advantage on this data.
+* *The noise reveals the run position.* A classifier tells first-half from
+  second-half circuits from the noise alone with AUC 0.773. Conclusion as
+  written beforehand: the chip drifted; because the order was random this
+  cannot leak the date, but it confirms the risk for studies that run
+  time-ordered data. The sentinels alone show little drift (their scatter is
+  1.08 times what shot noise explains).
+
+**Added after the result was seen.** These do not change the reading above;
+they make it precise. All are computed by `src/qon/hardware_analysis.py`.
+
+* *Paired differences* between D and every other set, with their own 95%
+  intervals (the planned table gave only each set's interval): D minus B
+  +0.015 (−0.023 to +0.054), D minus C −0.017 (−0.060 to +0.024), D minus E
+  +0.020 (−0.075 to +0.108), D minus F −0.020 (−0.116 to +0.074). None
+  excludes zero.
+* *A shuffled-label check* of the run-position result: in 300 repeats with
+  shuffled labels the AUC never reached 0.773 (97.5% of repeats were below
+  0.574), so p is about 0.003.
+* *A warning check.* What is left of the hardware values after the best
+  straight-line fit to the perfect values "reveals" early versus late event
+  dates (AUC 0.784) although the run order was random. This is not a clock:
+  the chip's distortion depends on the inputs, and the inputs contain the
+  date (the perfect-chip values alone give 0.984, and the simulated rehearsal
+  shows the same effect). It is recorded so that it is not mistaken for one.
+
+**What the run cannot show** is listed in notebook 5, section 6: it was too
+small to detect a subtle effect, and no date-ordered batch was sent to the
+chip.

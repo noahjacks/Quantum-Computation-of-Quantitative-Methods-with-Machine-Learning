@@ -1,0 +1,19 @@
+REHEARSAL: simulated stand-in data, NOT real hardware.
+600 hardware events, 294 of them used for testing
+How the chip distorts the perfect values: {'median_shrink': 0.899, 'median_jitter': 0.0166, 'shot_noise_alone': 0.0151, 'correlation_with_perfect_chip': 0.9984}
+model    All     LR     RF    XGB     NN
+set                                     
+A      0.495  0.481  0.497  0.491  0.516
+B      0.493  0.506  0.503  0.493  0.479
+C      0.510  0.513  0.536  0.538  0.463
+D      0.478  0.496  0.519  0.456  0.468
+E      0.493  0.510  0.498  0.489  0.471
+F      0.485  0.509  0.445  0.504  0.447
+Is D different from the others? (difference in AUC of the model average, 95% interval)
+   D minus A: -0.017  (-0.117 to +0.074)
+   D minus B: -0.015  (-0.039 to +0.009)
+   D minus C: -0.032  (-0.064 to +0.001)
+   D minus E: -0.015  (-0.047 to +0.016)
+   D minus F: -0.007  (-0.084 to +0.064)
+Drift: {'n_sentinels': 31, 'median_observed_std': 0.0139, 'median_shot_noise_std': 0.0146, 'excess_ratio': 0.9526, 'median_shift_first_vs_second_half': 0.0035, 'correlation_run_order_vs_date': 0.0264, 'noise_reveals_run_position_auc': 0.4733, 'run_position_auc_if_shuffled_975': 0.5679, 'run_position_p_value': 0.7342, 'leftover_reveals_date_auc': 0.8954, 'perfect_chip_values_reveal_date_auc': 0.9873}
+saved results/tables/partD_REHEARSAL_auc.csv, partD_REHEARSAL_differences.csv and partD_REHEARSAL_summary.json

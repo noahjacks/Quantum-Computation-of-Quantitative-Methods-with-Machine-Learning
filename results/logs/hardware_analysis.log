@@ -1,0 +1,19 @@
+hardware results: data/processed/hardware_features.parquet
+400 hardware events, 196 of them used for testing
+How the chip distorts the perfect values: {'median_shrink': 0.8658, 'median_jitter': 0.0337, 'shot_noise_alone': 0.0303, 'correlation_with_perfect_chip': 0.9929}
+model    All     LR     RF    XGB     NN
+set                                     
+A      0.453  0.456  0.510  0.432  0.460
+B      0.488  0.427  0.526  0.447  0.530
+C      0.520  0.427  0.484  0.519  0.549
+D      0.503  0.427  0.496  0.479  0.526
+E      0.484  0.425  0.459  0.508  0.499
+F      0.524  0.446  0.484  0.548  0.509
+Is D different from the others? (difference in AUC of the model average, 95% interval)
+   D minus A: +0.050  (-0.042 to +0.130)
+   D minus B: +0.015  (-0.023 to +0.054)
+   D minus C: -0.017  (-0.060 to +0.024)
+   D minus E: +0.020  (-0.075 to +0.108)
+   D minus F: -0.020  (-0.116 to +0.074)
+Drift: {'n_sentinels': 21, 'median_observed_std': 0.032, 'median_shot_noise_std': 0.0296, 'excess_ratio': 1.0815, 'median_shift_first_vs_second_half': 0.0102, 'correlation_run_order_vs_date': 0.0072, 'noise_reveals_run_position_auc': 0.7731, 'run_position_auc_if_shuffled_975': 0.5736, 'run_position_p_value': 0.0033, 'leftover_reveals_date_auc': 0.7839, 'perfect_chip_values_reveal_date_auc': 0.9837}
+saved results/tables/partD_hardware_auc.csv, partD_hardware_differences.csv and partD_hardware_summary.json

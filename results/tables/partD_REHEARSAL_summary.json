@@ -14,6 +14,10 @@
     "excess_ratio": 0.9525793738090859,
     "median_shift_first_vs_second_half": 0.0034729781014180144,
     "correlation_run_order_vs_date": 0.026432825608131056,
-    "noise_reveals_run_position_auc": 0.4733
+    "noise_reveals_run_position_auc": 0.4733,
+    "run_position_auc_if_shuffled_975": 0.5678783333333333,
+    "run_position_p_value": 0.7342192691029901,
+    "leftover_reveals_date_auc": 0.8954248366013072,
+    "perfect_chip_values_reveal_date_auc": 0.9873060335245208
   }
 }
