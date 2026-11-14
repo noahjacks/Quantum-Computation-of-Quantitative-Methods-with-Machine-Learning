@@ -133,6 +133,11 @@ Read the notebooks:
 
 Running on real IBM hardware is described in
 [notebooks/05_hardware_run_and_limitations.ipynb](notebooks/05_hardware_run_and_limitations.ipynb).
+The free IBM plan gives 10 minutes of quantum time per 28 days. The planned
+run is estimated at 6 to 8 minutes, and the script will not spend more than a
+set budget (8 minutes by default): it checks what each job cost, stops before
+the budget is crossed, saves after every job and continues later from where
+it stopped.
 
 ## Where things are
 
@@ -168,7 +173,7 @@ Code map (`src/qon/`):
 
 ## How we know it is right
 
-The test-suite (50 tests) checks, among other things, that
+The test-suite (53 tests) checks, among other things, that
 
 * the simulator matches three independent Qiskit simulators, including the
   matrix-product-state simulator HSBC used, on the full 109 qubits;
@@ -179,7 +184,11 @@ The test-suite (50 tests) checks, among other things, that
 * training data is always strictly older than the test day;
 * the backtest finds a planted signal and finds nothing in noise;
 * the fidelity kernel matches Qiskit state overlaps;
-* the hardware pipeline assigns each measurement to the right qubit.
+* the hardware pipeline assigns each measurement to the right qubit;
+* the hardware run cannot overspend: it stops before its budget of quantum
+  time, keeps everything already measured, and continues later without
+  repeating a circuit (tested with pretend prices on a simulated chip; IBM's
+  own usage reporting can only be tested with an account).
 
 ## Design in brief
 

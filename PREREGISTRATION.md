@@ -93,6 +93,7 @@ early stopping.
 | Shots | 1024 per circuit and basis unless the timing job shows the budget allows more |
 | Error handling | Pauli twirling and TREX, as in the HSBC paper; no other mitigation |
 | Before the run | a timing job of 5 circuits to size the run to the budget |
+| Spending limit | at most `--budget-seconds` of quantum time per session (default 480 of the free plan's 600); the run stops before crossing it, saves after every job, and can be continued later with the same settings and the same qubits (added 14 Nov 2026, see section 9) |
 
 ## 7. How the hardware result will be read (frozen)
 
@@ -136,3 +137,22 @@ reported separately and labelled as a follow-up wherever it appears.
 * **What was not changed.** No setting of Part 1, of the data, of the circuit
   or of the planned Part 2 run was altered after seeing any result. The
   hardware protocol in section 6 is unchanged and still unrun.
+
+### Change to how the hardware run is executed (14 Nov 2026, before any hardware run)
+
+A teammate asked whether the run could use up the team's free quantum time.
+The hardware script was changed so that it cannot:
+
+* **What was added.** A spending limit in quantum seconds, saving of the
+  results after every job, and the ability to continue a stopped run.
+* **What it does not change.** What is measured: the events, their random
+  order, the sentinels, the shots and the error handling are as in section 6.
+* **Consequences that will be reported with the result.**
+  * If the run stops early, fewer events than planned are measured. Because
+    the order is random they are a random subset of the planned events, and
+    the analysis uses them as they are. The number actually run is reported.
+  * If a stopped run is continued on a later day, the chip may have been
+    recalibrated in between. This is reported, and the sentinel circuits show
+    how much the chip moved.
+* **Cost estimate recorded before the run.** By IBM's published formula, 400
+  events at 1024 shots need about 6 to 8 minutes of quantum time.

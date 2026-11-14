@@ -40,6 +40,13 @@ if __name__ == "__main__":
                              "first, or use --rehearsal.")
         results = pd.read_parquet(HARDWARE_FILE)
         tag = "hardware"
+        record_file = HARDWARE_FILE.with_suffix(".json")
+        if record_file.exists():
+            record = json.loads(record_file.read_text())
+            if not record.get("complete", True):
+                print(f"NOTE: the hardware run is not complete ({record.get('n_circuits_done')} of "
+                      f"{record.get('n_circuits')} circuits). Analysing what has been measured; "
+                      "the events are a random subset of the plan.")
     out = analyse(results, fs["sets"], fs["events"])
     out["table"].to_csv(C.TABLES / f"partD_{tag}_auc.csv", index=False)
     summary = {k: out[k] for k in ("n_events", "n_test_events", "noise", "drift")}

@@ -95,6 +95,7 @@ Terms are grouped by topic, in the order you meet them.
 | **Depolarizing noise** | The standard model of gate error: with small probability the qubits' state is scrambled. |
 | **Readout error** | Reading a 0 as 1 or the reverse. |
 | **Shot noise** | The randomness left in an average over a finite number of shots. |
+| **Quantum seconds (quantum time)** | How IBM measures use of a real chip: the time the chip is reserved for your job. It is mostly the number of shots times the short pause the chip needs between shots. The free plan gives 600 quantum seconds (10 minutes) per 28 days; our hardware script stops before a set budget. |
 | **Error mitigation** | Tricks that reduce the effect of noise. HSBC used two: **Pauli twirling** (turns awkward errors into simple random ones) and **TREX** (measures and corrects readout error). |
 | **Drift** | The chip's error rates slowly change over minutes and hours, so results depend slightly on when a circuit ran. |
 | **Heron** | IBM's chip family used by HSBC (133 or 156 qubits). **ibm_torino**, **ibm_fez** and **ibm_marrakesh** are individual chips. |

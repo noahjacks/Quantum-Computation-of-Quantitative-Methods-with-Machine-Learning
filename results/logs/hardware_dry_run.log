@@ -1,18 +1,19 @@
 DRY RUN on a simulated copy of ibm_fez (no account, no quantum time).
   full circuit fits: 109 qubits in a row, depth 80, 648 entangling gates
+  the real run (400 events = 421 circuits, 1024 shots) is estimated at 6.1 to 8.1 minutes of quantum time;
+  the free plan gives 10 minutes per 28 days, and the script stops by itself at 8.
   executing the 12-qubit version on the simulated chip ...
 backend: fake_fez   12-qubit chain starts [140, 141, 142, 143, 144, 145, 146, 147] ...
   median two-qubit gate error on the chain: 0.0031   worst: 0.0040
   transpiled circuit: depth 80, gates {'rz': 376, 'sx': 200, 'cz': 66, 'barrier': 4}
   plan: 12 events + 2 sentinel repeats = 14 circuits, 256 shots x 3 measurement bases each
-  job 1: circuits 0..13 done
-saved hardware_features_LOCAL_DRY_RUN.parquet
+  job 1: 14 circuits sent (id 728de48b-2c60-4963-9f4a-ff19cdcf9476)
+         done (14 of 14 circuits)
+run complete: 14 circuits saved in hardware_features_LOCAL_DRY_RUN.parquet
 sentinel check (identical circuits repeated through the run):
-{
-  "n_sentinels": 2,
-  "median_observed_std": 0.03104628284320904,
-  "median_shot_noise_std": 0.05879874948271661,
-  "excess_ratio": 0.5280092368688016,
-  "median_shift_first_vs_second_half": 0.04390607425813736
-}
-agreement with the perfect-chip simulation: correlation 0.989, average shrink factor 0.949
+  n_sentinels: 2
+  median_observed_std: 0.03367
+  median_shot_noise_std: 0.05905
+  excess_ratio: 0.5701
+  median_shift_first_vs_second_half: 0.04761
+agreement with the perfect-chip simulation: correlation 0.990, average shrink factor 0.945
