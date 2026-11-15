@@ -207,3 +207,34 @@ they make it precise. All are computed by `src/qon/hardware_analysis.py`.
 **What the run cannot show** is listed in notebook 5, section 6: it was too
 small to detect a subtle effect, and no date-ordered batch was sent to the
 chip.
+
+## 11. A second session and the combined analysis (added 15 Nov 2026, not pre-registered)
+
+A teammate repeated the hardware run from a second free account. Nothing in
+sections 1 to 8 was changed for it, but running it, and combining it with the
+first session, were decided after the first result had been seen.
+
+| Item | What was done |
+|---|---|
+| Chip and qubits | `ibm_fez`, the same 109-qubit path as section 10 |
+| Events | 600 requested with the same script and seed; 523 measured (13 of them also in the first session) |
+| Run order | random; correlation of run order with event date 0.03 |
+| Shots, error handling | as section 10 |
+| Run | 11 jobs, 550 circuits, 517 quantum seconds, 23:43 to 23:58 UTC on 14 Nov 2026; stopped by the spending limit (570) |
+
+**Second session alone** (`scripts/07_analyse_hardware.py` on its file): A 0.511, D 0.480, D minus A −0.031 (−0.130 to +0.069); run
+position from the noise alone, AUC 0.701. D minus E was +0.043 (+0.005 to
++0.084); it is not seen in the first session or in the combined data and is
+treated as chance.
+
+**Both sessions combined** (`scripts/08_combine_runs.py`; 910 different events,
+449 test events; repeated events keep their first-session values): A 0.525,
+B 0.525, C 0.513, D 0.535, E 0.535, F 0.512. D minus A +0.010 (−0.043 to
++0.064); D minus E 0.000 (−0.036 to +0.038). Reading by section 7 is
+unchanged: no hardware advantage on this data.
+
+**Between the sessions.** The 13 shared events agree (correlation 0.990). A
+classifier tells which session an event ran in from the noise alone with AUC
+0.999 (97.5% of shuffled repeats below 0.547); session is unrelated to event
+date (correlation 0.000). The sentinel circuit differs between the sessions,
+so sentinel statistics are not pooled.
