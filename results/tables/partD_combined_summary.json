@@ -1,0 +1,27 @@
+{
+  "n_events": 910,
+  "n_test_events": 449,
+  "noise": {
+    "median_shrink": 0.8624869991170344,
+    "median_jitter": 0.034127096088146965,
+    "shot_noise_alone": 0.03026374473433547,
+    "correlation_with_perfect_chip": 0.9937492022666301
+  },
+  "drift": {
+    "correlation_run_order_vs_date": 0.010906189564461061,
+    "noise_reveals_run_position_auc": 0.9621446685182948,
+    "run_position_auc_if_shuffled_975": 0.5481537253954837,
+    "run_position_p_value": 0.0033222591362126247,
+    "leftover_reveals_date_auc": 0.7809158940813281,
+    "perfect_chip_values_reveal_date_auc": 0.9904535989835208
+  },
+  "two_runs": {
+    "events_in_both_runs": 13,
+    "agreement_between_runs_correlation": 0.9901970744428624,
+    "median_abs_difference_between_runs": 0.03346354033693286,
+    "noise_reveals_which_run_auc": 0.9991911764705882,
+    "which_run_auc_if_shuffled_975": 0.5472957107843137,
+    "which_run_p_value": 0.0033222591362126247,
+    "correlation_run_vs_date": -0.0004525062176267189
+  }
+}

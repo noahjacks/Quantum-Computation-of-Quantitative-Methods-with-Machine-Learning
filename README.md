@@ -49,37 +49,45 @@ The score is AUC: 0.5 is guessing, 1.0 is perfect. Intervals are 95%.
 * The same picture holds for every model, for blinding of 0, 1 and 4 days, and
   with a smaller training window.
 
-### Part 1 on real hardware (set D): 400 quote requests on IBM's ibm_fez, 14 Nov 2026
+### Part 1 on real hardware (set D): 910 quote requests on IBM's ibm_fez, 14 Nov 2026
 
-The circuit was run on a real quantum computer for 400 quote requests, sent in
-random order. All six kinds of input are scored on those same 400 requests:
-the models learn from the earlier half and are tested on the 196 later ones.
-This is a much smaller test than the table above, so the two tables should
-not be compared with each other.
+The circuit was run on a real quantum computer in two sessions about six hours
+apart, from two free accounts, with the same chip, qubits and settings: 400
+quote requests, then 523 more (13 were in both; 910 different requests in
+all). Each session sent its requests in random order. All six kinds of input
+are scored on those same 910 requests: the models learn from the earlier half
+and are tested on the 449 later ones. This is a much smaller test than the
+table above, so the two tables should not be compared with each other.
 
 | Set | What the models are given | AUC | 95% range |
 |---|---|---|---|
-| A | classical inputs | 0.45 | 0.39 to 0.52 |
-| B | circuit on a perfect quantum computer | 0.49 | 0.40 to 0.58 |
-| C | circuit on a noisy simulated chip | 0.52 | 0.44 to 0.60 |
-| **D** | **circuit on the real IBM chip** | **0.50** | **0.41 to 0.59** |
-| E | B with classical noise matched to the real chip | 0.48 | 0.41 to 0.57 |
-| F | random classical features | 0.52 | 0.44 to 0.61 |
+| A | classical inputs | 0.52 | 0.50 to 0.55 |
+| B | circuit on a perfect quantum computer | 0.52 | 0.47 to 0.58 |
+| C | circuit on a noisy simulated chip | 0.51 | 0.46 to 0.56 |
+| **D** | **circuit on the real IBM chip** | **0.53** | **0.48 to 0.59** |
+| E | B with classical noise matched to the real chip | 0.53 | 0.48 to 0.58 |
+| F | random classical features | 0.51 | 0.46 to 0.56 |
 
-* **Real hardware gave no advantage.** D minus A is +0.05 (−0.04 to +0.13),
-  and D minus its classical noise copy E is +0.02 (−0.08 to +0.11). HSBC
+* **Real hardware gave no advantage.** D minus A is +0.01 (−0.04 to +0.06),
+  and D minus its classical noise copy E is 0.00 (−0.04 to +0.04). HSBC
   report hardware scores of 0.75 to 0.97; the top of our range is 0.59.
 * **The chip's noise carries a time stamp.** From the noise alone, a model can
-  tell whether a circuit ran in the first or the second half of the
-  eight-minute run (AUC 0.77; with shuffled labels the same test almost always
-  stays below 0.58). The random run order kept this from leaking dates (correlation of
-  run order with date: 0.007).
-* **It is a small test.** With 400 requests every input scores at guessing
-  level, the classical ones included, so only a very large effect could have
-  shown.
+  tell which of the two sessions a circuit ran in almost perfectly (AUC 0.999;
+  with shuffled labels the same test almost always stays below 0.55). Within
+  the first, eight-minute session it could tell the first half from the second
+  (AUC 0.77), and within the second session likewise (0.70). The random run
+  order kept this from leaking dates (correlation of run order with date: 0.01).
+* **It is still a small test.** Every input scores close to guessing level, the
+  classical ones included. A gain larger than about 0.06 in AUC would have
+  shown; a subtle one would not.
 * **The chip behaved.** Its measurements agree with the exact simulation
-  (correlation 0.99), shrunk 13% by noise. The run used 397 of the free
-  plan's 600 quantum seconds.
+  (correlation 0.99), shrunk 14% by noise, and the 13 requests measured in
+  both sessions agree with each other (correlation 0.99). The sessions used
+  397 and 517 quantum seconds of the free plan's 600 per account.
+* **Each session alone** says the same with wider margins: D minus A was
+  +0.05 (−0.04 to +0.13) in the first and −0.03 (−0.13 to +0.07) in the
+  second. Combining the sessions was decided after both had run; it is not
+  part of the pre-registered plan. `scripts/08_combine_runs.py` repeats it.
 
 The full account is in
 [notebooks/05_hardware_run_and_limitations.ipynb](notebooks/05_hardware_run_and_limitations.ipynb).
@@ -113,7 +121,7 @@ simulations: no gain from the quantum feature map and no gain from simulated
 noise. On real hardware we found no gain either, in a test large enough to
 catch an effect of the size HSBC report but too small to catch a subtle one.
 They do not show that HSBC's hardware result is wrong: our data differs from
-theirs, and we ran one small batch on one chip (see Limitations).
+theirs, and we ran two small batches on one chip (see Limitations).
 
 ## What is real and what is simulated
 
@@ -126,7 +134,7 @@ theirs, and we ran one small batch on one chip (see Limitations).
 | The dealer whose quote is filled or not | Simulated with a simple rule |
 | Quantum computer, perfect | Simulated exactly (checked against Qiskit) |
 | Quantum computer, noisy | Simulated with a real chip's published error rates |
-| Real quantum computer | Used for 400 quote requests (IBM ibm_fez, 14 Nov 2026) |
+| Real quantum computer | Used for 910 quote requests (IBM ibm_fez, 14 Nov 2026, two sessions) |
 
 ## How to run it
 
@@ -149,7 +157,8 @@ Then the steps, in order. Times are for a recent laptop.
 | 5 | `.venv/bin/python scripts/05_run_part2_kernels.py` | about 45 min on 3 cores | Part 2 kernels |
 | 6 | `.venv/bin/python scripts/06_hardware_run.py --mode local` | 2 min | dry run of the hardware pipeline |
 | 7 | `.venv/bin/python scripts/07_analyse_hardware.py --rehearsal` | 3 min | rehearsal of the hardware analysis |
-| 8 | `.venv/bin/python scripts/07_analyse_hardware.py` | 3 min | analysis of the real hardware run (uses the measurements saved in `results/hardware_run/`) |
+| 8 | `.venv/bin/python scripts/07_analyse_hardware.py` | 3 min | analysis of the first hardware session (uses the measurements saved in `results/hardware_run/`) |
+| 9 | `.venv/bin/python scripts/08_combine_runs.py` | 3 min | both hardware sessions combined |
 
 Steps 4 and 5 use 3 processor cores at low priority by default so that a
 laptop stays usable. Add `--cores 8` to go faster (about 40 and 20 minutes);
@@ -185,7 +194,7 @@ where it stopped.
 | `scripts/` | the steps above |
 | `tests/` | automated checks |
 | `results/` | saved predictions, tables and figures |
-| `results/hardware_run/` | the raw measurements from the real IBM chip |
+| `results/hardware_run/` | the raw measurements from the real IBM chip (both sessions) |
 | `docs/FEATURE_COVERAGE.md` | what happened to each of the 216 features |
 | `docs/Features_Qiskit.csv` | the team's feature list |
 | `PREREGISTRATION.md` | the plan, frozen before the hardware run, and the record of the run |
@@ -257,7 +266,7 @@ The test-suite (55 tests) checks, among other things, that
 | Inputs | 216 | 98 |
 | Time resolution | microseconds | daily |
 | Circuit | 109 qubits, 216 or 432 gates | 109 qubits, 216 gates |
-| Hardware | ibm_torino and others; 16,000 events at 4,096 shots | ibm_fez; 400 events at 1,024 shots |
+| Hardware | ibm_torino and others; 16,000 events at 4,096 shots | ibm_fez; 910 events at 1,024 shots |
 | Feature scaling | statistics of the whole sample | statistics from before the test window only |
 | Hyper-parameter grids | large | compact |
 | Controls | none of the below | classical noise twin, random features, drift check, random run order, sentinels, frozen plan |
@@ -271,7 +280,7 @@ The test-suite (55 tests) checks, among other things, that
    simply quoting the average fill rate.
 4. 97 of 216 features: no ratings, company accounts, share prices, CDS or
    holdings.
-5. One small hardware run: 400 requests, one chip, one day, random order
+5. Two small hardware runs: 910 requests, one chip, one day, random order
    only. It can only detect a large effect. The simulated noise is a
    simplified model.
 6. One circuit and one seed (deliberately), one 68-day window.

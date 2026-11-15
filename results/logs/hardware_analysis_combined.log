@@ -1,0 +1,21 @@
+run 1: 400 events, run 2: 523 events, measured in both: 13
+910 hardware events, 449 of them used for testing
+How the chip distorts the perfect values: {'median_shrink': 0.8625, 'median_jitter': 0.0341, 'shot_noise_alone': 0.0303, 'correlation_with_perfect_chip': 0.9937}
+model    All     LR     RF    XGB     NN
+set                                     
+A      0.525  0.531  0.512  0.529  0.497
+B      0.525  0.503  0.522  0.526  0.494
+C      0.513  0.506  0.513  0.533  0.493
+D      0.535  0.502  0.529  0.548  0.502
+E      0.535  0.501  0.547  0.560  0.478
+F      0.512  0.502  0.502  0.516  0.511
+Is D different from the others? (difference in AUC of the model average, 95% interval)
+   D minus A: +0.010  (-0.043 to +0.064)
+   D minus B: +0.010  (-0.022 to +0.042)
+   D minus C: +0.022  (-0.011 to +0.052)
+   D minus E: +0.000  (-0.036 to +0.038)
+   D minus F: +0.023  (-0.047 to +0.096)
+Drift: {'n_sentinels': 48, 'median_observed_std': 0.0917, 'median_shot_noise_std': 0.0296, 'excess_ratio': 3.0919, 'median_shift_first_vs_second_half': 0.1485, 'correlation_run_order_vs_date': 0.0109, 'noise_reveals_run_position_auc': 0.9621, 'run_position_auc_if_shuffled_975': 0.5482, 'run_position_p_value': 0.0033, 'leftover_reveals_date_auc': 0.7809, 'perfect_chip_values_reveal_date_auc': 0.9905}
+Two runs compared: {'events_in_both_runs': 13, 'agreement_between_runs_correlation': 0.9902, 'median_abs_difference_between_runs': 0.0335, 'sentinel_shift_between_runs_in_spreads': 5.1278, 'noise_reveals_which_run_auc': 0.9992, 'which_run_auc_if_shuffled_975': 0.5473, 'which_run_p_value': 0.0033, 'correlation_run_vs_date': -0.0005}
+saved results/tables/partD_combined_auc.csv, partD_combined_differences.csv and partD_combined_summary.json
+.venv/bin/python scripts/08_combine_runs.py  171.67s user 3.48s system 99% cpu 2:55.62 total
